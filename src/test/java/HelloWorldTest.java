@@ -1,10 +1,10 @@
 import io.restassured.RestAssured;
-import io.restassured.http.Headers;
+
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLOutput;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,5 +67,21 @@ public class HelloWorldTest {
                 .get("https://playground.learnqa.ru/api/get_json_homework")
                 .andReturn();
         response.print();
+    }
+
+
+    @Test
+    public void getJsonHomework3() {
+        Response response = RestAssured
+                .given()
+                .redirects()
+                .follow(false)
+                .when()
+                .get("https://playground.learnqa.ru/api/long_redirect")
+                .andReturn();
+
+        String locationHeader = response.getHeader("Location");
+        System.out.println(locationHeader);
+
     }
 }
