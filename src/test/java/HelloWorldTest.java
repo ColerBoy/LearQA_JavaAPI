@@ -84,4 +84,24 @@ public class HelloWorldTest {
         System.out.println(locationHeader);
 
     }
+
+    @Test
+    public void getJsonHomework4() {
+        String locationHeader = "https://playground.learnqa.ru/api/long_redirect";
+        int code = 100;
+        while (code!=200) {
+            Response response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get(locationHeader)
+                    .andReturn();
+            locationHeader = response.getHeader("Location");
+            code = response.getStatusCode();
+            System.out.println(code);
+        }
+
+
+    }
 }
