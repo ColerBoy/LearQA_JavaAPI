@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class HelloWorldTest {
     @Test
     public void HelloWorldName() {
@@ -101,7 +103,90 @@ public class HelloWorldTest {
             code = response.getStatusCode();
             System.out.println(code);
         }
-
-
     }
+    @Test
+    public void longTimeJob() {
+        Response response = RestAssured
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .andReturn();
+        response.prettyPrint();
+        String token = response.getHeader("token");
+        System.out.println(token);
+         Response response2 = RestAssured
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .andReturn();
+        response2.prettyPrint();
+    }
+
+    @Test
+    public void longTimeJob2() throws InterruptedException {
+        JsonPath response = RestAssured
+                .given()
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+        String token = response.get("token");
+        int seconds = response.get("seconds");
+        System.out.println(token);
+        JsonPath response2 = RestAssured
+                .given()
+                .queryParam("token",token)
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+        String status = response2.get("status");
+
+        System.out.println(status);
+        if (status.equals("Job is NOT ready")){
+            System.out.println("Status is correct");
+            Thread.sleep(seconds*1000);
+            JsonPath response3 = RestAssured
+                    .given()
+                    .queryParam("token",token)
+                    .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                    .jsonPath();
+            String status2 = response3.get("status");
+            String result = response3.get("result");
+            if (status2.equals("Job is ready") && result!=null){
+                System.out.println("Done\n"+status2+"\n"+result);
+
+            }
+        }
+    }
+
+        private static final String BASE_URL = "https://playground.learnqa.ru/ajax/api/longtime_job";
+
+        @Test
+        public void testLongTimeJob() throws InterruptedException {
+            // 1. Создание задачи
+            JsonPath initialResponse = RestAssured.given().get(BASE_URL).jsonPath();
+            String token = initialResponse.getString("token");
+            int seconds = initialResponse.getInt("seconds");
+
+            assertNotNull(token, "Token should not be null");
+            assertTrue(seconds > 0, "Seconds should be greater than zero");
+            System.out.println("Task created with token: " + token + ", will be ready in: " + seconds + " seconds");
+
+            // 2. Запрос до завершения задачи
+            JsonPath preCheckResponse = RestAssured.given()
+                    .queryParam("token", token)
+                    .get(BASE_URL)
+                    .jsonPath();
+
+            assertEquals("Job is NOT ready", preCheckResponse.getString("status"), "Status before completion should be 'Job is NOT ready'");
+            System.out.println("Checked before completion: Job is NOT ready");
+
+            // 3. Ожидание завершения задачи
+            Thread.sleep(seconds * 1000L);
+
+            // 4. Запрос после завершения задачи
+            JsonPath finalResponse = RestAssured.given()
+                    .queryParam("token", token)
+                    .get(BASE_URL)
+                    .jsonPath();
+
+            assertEquals("Job is ready", finalResponse.getString("status"), "Status after completion should be 'Job is ready'");
+            assertNotNull(finalResponse.getString("result"), "Result should not be null after completion");
+            System.out.println("Job completed successfully: " + finalResponse.getString("result"));
+        }
+
+
 }
