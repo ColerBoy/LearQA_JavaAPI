@@ -104,19 +104,6 @@ public class HelloWorldTest {
             System.out.println(code);
         }
     }
-    @Test
-    public void longTimeJob() {
-        Response response = RestAssured
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .andReturn();
-        response.prettyPrint();
-        String token = response.getHeader("token");
-        System.out.println(token);
-         Response response2 = RestAssured
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .andReturn();
-        response2.prettyPrint();
-    }
 
     @Test
     public void longTimeJob2() throws InterruptedException {
@@ -152,10 +139,11 @@ public class HelloWorldTest {
         }
     }
 
-        private static final String BASE_URL = "https://playground.learnqa.ru/ajax/api/longtime_job";
+
 
         @Test
         public void testLongTimeJob() throws InterruptedException {
+            String BASE_URL = "https://playground.learnqa.ru/ajax/api/longtime_job";
             // 1. Создание задачи
             JsonPath initialResponse = RestAssured.given().get(BASE_URL).jsonPath();
             String token = initialResponse.getString("token");
