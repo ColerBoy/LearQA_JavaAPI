@@ -46,4 +46,12 @@ public class ApiCoreRequests {
                 .post(url)
                 .andReturn();
     }
+
+    @Step("Make a Get-request without params")
+    public Response makeGetRequestWithoutParams(String url){
+        return given()
+                .filter(new AllureRestAssured())
+                .get(url)
+                .andReturn();
+    }
 }

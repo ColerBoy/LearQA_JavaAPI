@@ -1,11 +1,13 @@
 package tests;
 
+import io.qameta.allure.Description;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,6 +19,8 @@ public class UserRegisterTest extends BaseTestCase {
 
     private final ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
     @Test
+    @Description("This test create user with existing email")
+    @DisplayName("Test negative register")
     public void testCreateUserWithExistingEmail(){
         String email = "vinkotov@example.com";
         Map<String, String> userData = new HashMap<>();
@@ -33,6 +37,8 @@ public class UserRegisterTest extends BaseTestCase {
 
     }
     @Test
+    @Description("This test create new user")
+    @DisplayName("Test positive register")
     public void testCreateUserSuccessfully(){
         Map<String, String> userData = DataGenerator.getRegistrationData( );
 
@@ -44,6 +50,8 @@ public class UserRegisterTest extends BaseTestCase {
     }
 
     @Test
+    @Description("This test create user with incorrect email")
+    @DisplayName("Test negative register")
     public void testCreateUserWithIncorrectEmail(){
         String email = "vinkotovexample.com";
         Map<String, String> userData = new HashMap<>();
@@ -58,6 +66,8 @@ public class UserRegisterTest extends BaseTestCase {
     }
 
     @ParameterizedTest
+    @Description("This test create user without one field")
+    @DisplayName("Test negative register")
     @ValueSource(strings = {"email", "password","username","firstName","lastName"})
     public void testCreateUserWithoutOneField(String field){
         Map<String, String> userData = new HashMap<>();
@@ -72,6 +82,8 @@ public class UserRegisterTest extends BaseTestCase {
     }
 
     @Test
+    @Description("This test create user with short first name")
+    @DisplayName("Test negative register")
     public void testCreateUserWithShortFirstName(){
         String firstName = "v";
         Map<String, String> userData = new HashMap<>();
@@ -86,6 +98,8 @@ public class UserRegisterTest extends BaseTestCase {
     }
 
     @Test
+    @Description("This test create user with long first name")
+    @DisplayName("Test negative register")
     public void testCreateUserWithLongFirstName(){
         String firstName = "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.";
         Map<String, String> userData = new HashMap<>();
